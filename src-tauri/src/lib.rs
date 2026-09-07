@@ -1,4 +1,5 @@
 mod commands;
+pub mod shared;
 
 pub fn run_application() -> tauri::Result<()> {
     tauri::Builder::default()
