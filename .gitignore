@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+.next/
+out/
+dist/
+target/
+src-tauri/target/
+tsconfig.tsbuildinfo
+.env
+.env.*
+!.env.example
