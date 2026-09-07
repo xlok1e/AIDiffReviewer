@@ -1,1 +1,1 @@
-export type DiffReviewModuleStatus = 'notStarted' | 'ready'
+export type DiffReviewModuleStatus = 'notStarted' | 'ready';

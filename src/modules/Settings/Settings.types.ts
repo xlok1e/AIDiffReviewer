@@ -1,1 +1,1 @@
-export type SettingsModuleStatus = 'notStarted' | 'ready'
+export type SettingsModuleStatus = 'notStarted' | 'ready';

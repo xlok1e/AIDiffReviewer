@@ -1,1 +1,1 @@
-export { invokeCommand } from './invokeCommand'
+export { invokeCommand } from './invokeCommand';

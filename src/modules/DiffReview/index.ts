@@ -1,1 +1,1 @@
-export type { DiffReviewModuleStatus } from './DiffReview.types'
+export type { DiffReviewModuleStatus } from './DiffReview.types';

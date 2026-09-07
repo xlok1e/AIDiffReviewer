@@ -1,1 +1,1 @@
-export type DependencyGraphModuleStatus = 'notStarted' | 'ready'
+export type DependencyGraphModuleStatus = 'notStarted' | 'ready';

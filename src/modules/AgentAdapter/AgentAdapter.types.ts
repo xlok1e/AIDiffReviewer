@@ -1,1 +1,1 @@
-export type AgentAdapterModuleStatus = 'notStarted' | 'ready'
+export type AgentAdapterModuleStatus = 'notStarted' | 'ready';

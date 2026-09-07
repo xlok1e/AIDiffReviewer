@@ -1,1 +1,1 @@
-export type { AgentAdapterModuleStatus } from './AgentAdapter.types'
+export type { AgentAdapterModuleStatus } from './AgentAdapter.types';

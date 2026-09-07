@@ -1,4 +1,5 @@
 <!-- BEGIN:agent-rules -->
+
 # How to Read This File
 
 This is not generic advice to "write good code"; it is a concrete architectural contract. Every rule below is mandatory for new code from the first file, even when some modules do not exist yet. If it is not obvious whether a rule applies to the task, verify through current documentation or search instead of relying on a model's memory of "how things are usually done".
@@ -113,35 +114,37 @@ For **client state**, cross-module scope is protected with the Scoped Context pa
 
 ```tsx
 // shared/context/DiffSessionStoreContext.tsx
-import { createContext, useContext, useState, type ReactNode } from 'react'
-import { createStore, useStore, type StoreApi } from 'zustand'
+import { createContext, useContext, useState, type ReactNode } from 'react';
+import { createStore, useStore, type StoreApi } from 'zustand';
 
 interface DiffSessionState {
-	activeFilePath: string | null
-	setActiveFile: (path: string) => void
+  activeFilePath: string | null;
+  setActiveFile: (path: string) => void;
 }
 
-const DiffSessionStoreContext = createContext<StoreApi<DiffSessionState> | null>(null)
+const DiffSessionStoreContext = createContext<StoreApi<DiffSessionState> | null>(null);
 
 export function DiffSessionStoreProvider({ children }: { children: ReactNode }) {
-	const [store] = useState(() =>
-		createStore<DiffSessionState>(set => ({
-			activeFilePath: null,
-			setActiveFile: path => set({ activeFilePath: path }),
-		})),
-	)
+  const [store] = useState(() =>
+    createStore<DiffSessionState>(set => ({
+      activeFilePath: null,
+      setActiveFile: path => set({ activeFilePath: path }),
+    })),
+  );
 
-	return <DiffSessionStoreContext.Provider value={store}>{children}</DiffSessionStoreContext.Provider>
+  return (
+    <DiffSessionStoreContext.Provider value={store}>{children}</DiffSessionStoreContext.Provider>
+  );
 }
 
 export function useDiffSessionStore<T>(selector: (state: DiffSessionState) => T): T {
-	const store = useContext(DiffSessionStoreContext)
+  const store = useContext(DiffSessionStoreContext);
 
-	if (!store) {
-		throw new Error('useDiffSessionStore must be used only inside DiffSessionStoreProvider')
-	}
+  if (!store) {
+    throw new Error('useDiffSessionStore must be used only inside DiffSessionStoreProvider');
+  }
 
-	return useStore(store, selector)
+  return useStore(store, selector);
 }
 ```
 
@@ -193,22 +196,22 @@ pub fn get_file_diff(repo_path: String, file_path: String) -> Result<FileDiff, S
 ```ts
 // modules/DiffReview/api/diff.model.ts
 export interface FileDiff {
-	filePath: string
-	hunks: DiffHunk[]
+  filePath: string;
+  hunks: DiffHunk[];
 }
 ```
 
 ```ts
 // modules/DiffReview/api/diff.api.ts
-import { invoke } from '@tauri-apps/api/core'
-import type { FileDiff } from './diff.model'
+import { invoke } from '@tauri-apps/api/core';
+import type { FileDiff } from './diff.model';
 
 class DiffApi {
-	getFileDiff = (repoPath: string, filePath: string): Promise<FileDiff> =>
-		invoke('get_file_diff', { repoPath, filePath })
+  getFileDiff = (repoPath: string, filePath: string): Promise<FileDiff> =>
+    invoke('get_file_diff', { repoPath, filePath });
 }
 
-export const diffApi = new DiffApi()
+export const diffApi = new DiffApi();
 ```
 
 - Any change to a `#[tauri::command]` signature must be synchronized with the TypeScript type in the corresponding `.model.ts` in the same commit. Never leave these two places out of sync.
@@ -258,99 +261,104 @@ overlays/
 
 ```ts
 export enum EDiffReviewOverlay {
-	ConfirmReject = 'confirmReject',
-	AskExplanation = 'askExplanation',
+  ConfirmReject = 'confirmReject',
+  AskExplanation = 'askExplanation',
 }
 
 export interface DiffReviewOverlayDataMap {
-	[EDiffReviewOverlay.ConfirmReject]: { hunkId: string; onConfirm: () => void }
-	[EDiffReviewOverlay.AskExplanation]: { hunkId: string; question: string }
+  [EDiffReviewOverlay.ConfirmReject]: { hunkId: string; onConfirm: () => void };
+  [EDiffReviewOverlay.AskExplanation]: { hunkId: string; question: string };
 }
 
-export type OverlayOpenStrategy = 'reset' | 'replace' | 'stack'
+export type OverlayOpenStrategy = 'reset' | 'replace' | 'stack';
 
 export type OverlayStackItem = {
-	[K in EDiffReviewOverlay]: {
-		id: number
-		name: K
-		data: DiffReviewOverlayDataMap[K]
-		isVisible: boolean
-	}
-}[EDiffReviewOverlay]
+  [K in EDiffReviewOverlay]: {
+    id: number;
+    name: K;
+    data: DiffReviewOverlayDataMap[K];
+    isVisible: boolean;
+  };
+}[EDiffReviewOverlay];
 ```
 
 **store:**
 
 ```ts
-import { create } from 'zustand'
-import type { DiffReviewOverlayDataMap, OverlayOpenStrategy, OverlayStackItem } from './diffReviewOverlay.types'
-import { EDiffReviewOverlay } from './diffReviewOverlay.types'
+import { create } from 'zustand';
+import type {
+  DiffReviewOverlayDataMap,
+  OverlayOpenStrategy,
+  OverlayStackItem,
+} from './diffReviewOverlay.types';
+import { EDiffReviewOverlay } from './diffReviewOverlay.types';
 
-let nextId = 0
+let nextId = 0;
 
 interface DiffReviewOverlayState {
-	stack: OverlayStackItem[]
-	open: <T extends EDiffReviewOverlay>(
-		name: T,
-		data: DiffReviewOverlayDataMap[T],
-		strategy?: OverlayOpenStrategy,
-	) => void
-	close: () => void
-	cleanupClosed: () => void
-	closeAll: () => void
+  stack: OverlayStackItem[];
+  open: <T extends EDiffReviewOverlay>(
+    name: T,
+    data: DiffReviewOverlayDataMap[T],
+    strategy?: OverlayOpenStrategy,
+  ) => void;
+  close: () => void;
+  cleanupClosed: () => void;
+  closeAll: () => void;
 }
 
 export const useDiffReviewOverlayStore = create<DiffReviewOverlayState>((set, get) => ({
-	stack: [],
+  stack: [],
 
-	open: (name, data, strategy = 'reset') => {
-		const item = { id: ++nextId, name, data, isVisible: true } as OverlayStackItem
+  open: (name, data, strategy = 'reset') => {
+    const item = { id: ++nextId, name, data, isVisible: true } as OverlayStackItem;
 
-		if (strategy === 'reset') {
-			set({ stack: [item] })
-			return
-		}
+    if (strategy === 'reset') {
+      set({ stack: [item] });
+      return;
+    }
 
-		if (strategy === 'replace') {
-			set(state => ({ stack: [...state.stack.map(i => ({ ...i, isVisible: false })), item] }))
-			return
-		}
+    if (strategy === 'replace') {
+      set(state => ({ stack: [...state.stack.map(i => ({ ...i, isVisible: false })), item] }));
+      return;
+    }
 
-		set(state => ({ stack: [...state.stack, item] }))
-	},
+    set(state => ({ stack: [...state.stack, item] }));
+  },
 
-	close: () => {
-		const { stack } = get()
-		if (stack.length === 0) return
+  close: () => {
+    const { stack } = get();
+    if (stack.length === 0) return;
 
-		set({
-			stack: stack.map((item, index) =>
-				index === stack.length - 1 ? { ...item, isVisible: false } : item,
-			),
-		})
-		setTimeout(() => get().cleanupClosed(), 350)
-	},
+    set({
+      stack: stack.map((item, index) =>
+        index === stack.length - 1 ? { ...item, isVisible: false } : item,
+      ),
+    });
+    setTimeout(() => get().cleanupClosed(), 350);
+  },
 
-	cleanupClosed: () => {
-		set(state => {
-			if (state.stack.length === 0) return state
-			const stack = state.stack.slice(0, -1)
-			if (stack.length > 0) stack[stack.length - 1] = { ...stack[stack.length - 1], isVisible: true }
-			return { stack }
-		})
-	},
+  cleanupClosed: () => {
+    set(state => {
+      if (state.stack.length === 0) return state;
+      const stack = state.stack.slice(0, -1);
+      if (stack.length > 0)
+        stack[stack.length - 1] = { ...stack[stack.length - 1], isVisible: true };
+      return { stack };
+    });
+  },
 
-	closeAll: () => set({ stack: [] }),
-}))
+  closeAll: () => set({ stack: [] }),
+}));
 ```
 
 **Open strategies** (third argument to `open()`):
 
-| Strategy    | Behavior                                                                 |
-| ----------- | ------------------------------------------------------------------------ |
-| `'reset'`   | Closes all current overlays and opens this one (default)                 |
+| Strategy    | Behavior                                                                                         |
+| ----------- | ------------------------------------------------------------------------------------------------ |
+| `'reset'`   | Closes all current overlays and opens this one (default)                                         |
 | `'replace'` | Hides the current top overlay and places a new one above it; closing returns to the previous one |
-| `'stack'`   | Places a new overlay above the current stack without hiding anything     |
+| `'stack'`   | Places a new overlay above the current stack without hiding anything                             |
 
 Open an overlay only through its hook from the component hook. Never call the store directly from JSX.
 

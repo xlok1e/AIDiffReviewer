@@ -1,5 +1,5 @@
-import nextVitals from 'eslint-config-next/core-web-vitals'
-import nextTypescript from 'eslint-config-next/typescript'
+import nextVitals from 'eslint-config-next/core-web-vitals';
+import nextTypescript from 'eslint-config-next/typescript';
 
 const eslintConfig = [
   ...nextVitals,
@@ -7,6 +7,6 @@ const eslintConfig = [
   {
     ignores: ['out/**', '.next/**', 'src-tauri/target/**'],
   },
-]
+];
 
-export default eslintConfig
+export default eslintConfig;

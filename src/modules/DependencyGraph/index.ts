@@ -1,1 +1,1 @@
-export type { DependencyGraphModuleStatus } from './DependencyGraph.types'
+export type { DependencyGraphModuleStatus } from './DependencyGraph.types';

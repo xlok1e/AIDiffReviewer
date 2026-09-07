@@ -1,5 +1,5 @@
-import { AppShell } from '@/modules/AppShell'
+import { AppShell } from '@/modules/AppShell';
 
 export default function HomePage() {
-  return <AppShell />
+  return <AppShell />;
 }

@@ -1,1 +1,1 @@
-export { AppShell } from './features/AppShell'
+export { AppShell } from './features/AppShell';

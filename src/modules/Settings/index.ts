@@ -1,1 +1,1 @@
-export type { SettingsModuleStatus } from './Settings.types'
+export type { SettingsModuleStatus } from './Settings.types';

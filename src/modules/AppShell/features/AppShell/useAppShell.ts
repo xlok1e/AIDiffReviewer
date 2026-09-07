@@ -1,4 +1,4 @@
-import type { AppShellViewModel } from '../../AppShell.types'
+import type { AppShellViewModel } from '../../AppShell.types';
 
 export function useAppShell(): AppShellViewModel {
   return {
@@ -8,5 +8,5 @@ export function useAppShell(): AppShellViewModel {
     reviewedFileCount: 0,
     totalFileCount: 0,
     files: [],
-  }
+  };
 }

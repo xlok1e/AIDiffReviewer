@@ -1,7 +1,7 @@
-import type { NextConfig } from 'next'
+import type { NextConfig } from 'next';
 
-const isProductionBuild = process.env.NODE_ENV === 'production'
-const tauriDevHost = process.env.TAURI_DEV_HOST ?? 'localhost'
+const isProductionBuild = process.env.NODE_ENV === 'production';
+const tauriDevHost = process.env.TAURI_DEV_HOST ?? 'localhost';
 
 const nextConfig: NextConfig = {
   output: 'export',
@@ -9,6 +9,6 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   assetPrefix: isProductionBuild ? undefined : `http://${tauriDevHost}:3000`,
-}
+};
 
-export default nextConfig
+export default nextConfig;
