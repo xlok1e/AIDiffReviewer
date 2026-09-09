@@ -4,3 +4,5 @@ import { twMerge } from 'tailwind-merge';
 export function mergeClassNames(...classValues: ClassValue[]): string {
   return twMerge(clsx(classValues));
 }
+
+export const cn = mergeClassNames;

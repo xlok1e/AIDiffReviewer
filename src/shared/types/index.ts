@@ -7,6 +7,7 @@ export type {
   RepositoryFilePath,
   RepositoryPath,
 } from './ReviewPrimitives.types';
+export type { AppTheme, AppThemeSyncState, MonacoTheme } from './Theme.types';
 export {
   createHunkHash,
   createHunkId,

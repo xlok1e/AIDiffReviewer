@@ -222,6 +222,8 @@ export const diffApi = new DiffApi();
 
 - `src/ui/shadcn/*` is the output of `shadcn add` exactly as generated. Never edit it manually; regenerate it through the CLI (`bunx shadcn add <name>`). If behavior beyond the primitive is needed, wrap it instead of touching the file.
 - `src/ui/components/*` contains custom wrappers over primitives.
+- Generic layout containers should be wrapped in named components instead of repeated raw `div` blocks. Use shared wrappers such as `Flex`/`AppPanel` for common layout primitives, and extract a local named component when a container has feature meaning.
+- If a component would receive more than 3 props at the call site, group them into a typed object such as `viewModel`, `actions`, or `options` instead of passing a long flat prop list.
 - Single component structure:
 
 ```
@@ -409,3 +411,13 @@ Open an overlay only through its hook from the component hook. Never call the st
 3. `cargo clippy -- -D warnings`: if Rust code changed
 4. `cargo test` / frontend unit tests: if logic changed (diff parsing, topological sort, agent adapter)
 5. Do not start the local dev server unless explicitly asked. Coverage is verified by linting, typechecking, and tests, not by manual runs.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

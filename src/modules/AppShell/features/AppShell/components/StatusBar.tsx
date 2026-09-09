@@ -1,33 +1,36 @@
-import { Circle } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import type { AgentConnectionStatus } from '@/shared/types/AppStatus.types';
+import { Flex, StatusIndicator } from '@/ui/components';
 
-interface StatusBarProps {
-  agentConnectionStatus: AgentConnectionStatus;
-  currentFilePath: string | null;
-  reviewedFileCount: number;
-  totalFileCount: number;
-}
+import type { StatusBarProps } from './AppShellComponents.types';
 
-export function StatusBar({
-  agentConnectionStatus,
-  currentFilePath,
-  reviewedFileCount,
-  totalFileCount,
-}: StatusBarProps): ReactNode {
+export function StatusBar({ viewModel }: StatusBarProps): ReactNode {
+  const {
+    agentConnectionStatus,
+    currentFilePath,
+    monacoTheme,
+    reviewedFileCount,
+    totalFileCount,
+    workspaceStatus,
+  } = viewModel;
+
   return (
-    <footer className='flex items-center justify-between bg-muted px-3 font-mono text-xs text-muted-foreground'>
+    <footer className='grid h-[26px] grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-t bg-panel-strong px-3 font-mono text-[11px] text-muted-foreground'>
       <span className='truncate'>{currentFilePath ?? 'No active file'}</span>
-      <div className='flex items-center gap-4'>
+      <Flex align='center' gap={16}>
         <span className='tabular-nums'>
           {reviewedFileCount}/{totalFileCount} reviewed
         </span>
-        <span className='inline-flex items-center gap-1.5'>
-          <Circle size={8} />
-          {agentConnectionStatus}
-        </span>
-      </div>
+        <span>{monacoTheme}</span>
+        <StatusIndicator
+          label={workspaceStatus}
+          tone={workspaceStatus === 'ready' ? 'success' : 'neutral'}
+        />
+        <StatusIndicator
+          label={agentConnectionStatus}
+          tone={agentConnectionStatus === 'connected' ? 'success' : 'neutral'}
+        />
+      </Flex>
     </footer>
   );
 }
